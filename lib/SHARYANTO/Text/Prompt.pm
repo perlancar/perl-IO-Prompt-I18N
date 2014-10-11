@@ -3,7 +3,7 @@ package SHARYANTO::Text::Prompt;
 # DATE
 # VERSION
 
-use 5.010;
+use 5.010001;
 use strict;
 use warnings;
 
@@ -78,7 +78,7 @@ Return the chomp-ed value.
 
 Options:
 
-=over 4
+=over
 
 =item * var => \$var
 
@@ -94,12 +94,16 @@ Set default value.
 
 Validate using regex.
 
+=back
+
 
 =head2 confirm($text, \%opts) => bool
 
 Display C<$text> and ask for yes or no. Will return bool.
 
 Options:
+
+=over
 
 =item * default => bool
 

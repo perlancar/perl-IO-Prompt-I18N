@@ -1,5 +1,9 @@
 Revision history for SHARYANTO-Text-Prompt
 
-0.76    2014-10-11 (PERLANCAR) - unreleased
+0.76    2014-10-11 (PERLANCAR)
 
         - First release, split from SHARYANTO-Utils to reduce dependencies.
+
+        - Add function: confirm().
+
+
