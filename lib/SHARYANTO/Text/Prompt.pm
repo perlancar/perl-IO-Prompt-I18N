@@ -13,12 +13,13 @@ our @EXPORT_OK = qw(prompt);
 
 sub prompt {
     my ($text, $opts) = @_;
+
+    $text //= "Enter value";
     $opts //= {};
+
     my $answer;
 
     my $default;
-    if ($opts->{var}) {
-    }
     $default = ${$opts->{var}} if $opts->{var};
     $default = $opts->{default} if defined($opts->{default});
 
