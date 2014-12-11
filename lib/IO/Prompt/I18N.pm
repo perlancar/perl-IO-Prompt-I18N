@@ -99,9 +99,13 @@ sub confirm {
         $text .=
             join("",
                  " (",
-                 join("/", map {defined($default) && $_ eq $default ?
-                                    uc($_) : lc($_)} (
-                     @{ $opts->{yes_words} }, @{ $opts->{no_words} })),
+                 join("/",
+                      (map {$opts->{default} ? uc($_) : lc($_)}
+                           @{ $opts->{yes_words} }),
+                      (map {defined($opts->{default}) && !$opts->{default} ?
+                                        uc($_) : lc($_)}
+                           @{ $opts->{no_words} }),
+                  ),
                  ")?",
              );
         $show_default = 0; # because we already indicate which using uppercase
