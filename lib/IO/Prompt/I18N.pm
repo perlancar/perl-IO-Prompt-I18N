@@ -95,7 +95,7 @@ sub confirm {
 
     my $suffix;
     my $show_default = 1;
-    unless ($text =~ /[()?]/) {
+    unless ($text =~ /[?]/) {
         $text .=
             join("",
                  " (",
