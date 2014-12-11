@@ -1,5 +1,10 @@
 Revision history for IO-Prompt-I18N
 
+0.79    2014-12-11 (PERLANCAR)
+
+	- [ux] Uppercase all yes words (or no words).
+
+
 0.78    2014-12-11 (PERLANCAR)
 
 	- [ux] Tweak condition for showing choice of words.
