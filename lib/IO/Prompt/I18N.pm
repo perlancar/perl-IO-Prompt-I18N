@@ -60,32 +60,62 @@ sub confirm {
 
     $text //= "Confirm";
     $opts //= {};
-    $opts->{lang} //= 'en';
+
+    state $supported_langs = {
+        en => {yes_words=>[qw/y yes/], no_words=>[qw/n no/]},
+        fr => {yes_words=>[qw/o oui/], no_words=>[qw/n non/]},
+        id => {yes_words=>[qw/y ya/] , no_words=>[qw/t tidak/]},
+    };
+
+    $opts->{lang} //= do {
+        if ($ENV{LANG} && $ENV{LANG} =~ /^([a-z]{2})/ &&
+                $supported_langs->{$1}) {
+            $1;
+        } elsif ($ENV{LANGUAGE} && $ENV{LANGUAGE} =~ /^([a-z]{2})/ &&
+                $supported_langs->{$1}) {
+            $1;
+        } else {
+            'en';
+        }
+    };
+
+    $supported_langs->{$opts->{lang}}
+        or die "Unknown language '$opts->{lang}'";
+    $opts->{yes_words} //= $supported_langs->{$opts->{lang}}{yes_words};
+    $opts->{no_words}  //= $supported_langs->{$opts->{lang}}{no_words};
+
+    my $default;
+    if (defined $opts->{default}) {
+        if ($opts->{default}) {
+            $default = $opts->{yes_words}[0];
+        } else {
+            $default = $opts->{no_words}[0];
+        }
+    }
 
     my $suffix;
-    if ($opts->{lang} eq 'en') {
-        $opts->{yes_regex} //= qr/\A(y|yes)\z/i;
-        $opts->{no_regex}  //= qr/\A(n|no)\z/i;
-        $suffix = ' (y|yes|n|no)?';
-    } elsif ($opts->{lang} eq 'fr') {
-        $opts->{yes_regex} //= qr/\A(o|oui)\z/i;
-        $opts->{no_regex}  //= qr/\A(n|non)\z/i;
-        $suffix = ' (y|yes|n|no)?';
-    } elsif ($opts->{lang} eq 'id') {
-        $opts->{yes_regex} //= qr/\A(y|ya)\z/i;
-        $opts->{no_regex}  //= qr/\A(t|tidak)\z/i;
-        $suffix = ' (y|yes|n|no)?';
-    } else {
-        die "Unknown language '$opts->{lang}'";
+    unless ($text =~ /[()?]/) {
+        $text .=
+            join("",
+                 " (",
+                 join("/", map {defined($default) && $_ eq $default ?
+                                    uc($_) : lc($_)} (
+                     @{ $opts->{yes_words} }, @{ $opts->{no_words} })),
+                 ")?",
+             );
     }
-    $text .= $suffix unless $text =~ /[()?]/;
+
+    my $re = join("|", map {quotemeta}
+                      (@{$opts->{yes_words}}, @{$opts->{no_words}}));
+    $re = qr/\A($re)\z/i;
 
     my $answer = prompt($text, {
         required => 1,
-        regex    => qr/$opts->{yes_regex}|$opts->{no_regex}/,
-        default  => $opts->{default},
+        regex    => $re,
+        default  => $default,
     });
-    $answer =~ $opts->{yes_regex} ? 1:0;
+    use experimental 'smartmatch';
+    $answer ~~ @{$opts->{yes_words}} ? 1:0;
 }
 
 1;
@@ -151,23 +181,23 @@ Options:
 
 =item * lang => str
 
-Support several languages (C<id>, C<en>, C<fr>). Will preset C<yes_regex> and
-C<no_regex> and adds suffix to C<$text>. Will die if language is not supported.
-Here are the supported languages:
+Support several languages (C<id>, C<en>, C<fr>). Will preset C<yes_words> and
+C<no_words> and adds the choice of words to C<$text>. Will die if language is
+not supported. Here are the supported languages:
 
-  lang  yes_regex             no_regex                 suffix
-  ----  ---------             --------                 ------
-  id    qr/\A(y|ya)\z/i       qr/\A(t|tidak)\z/i       (y/ya/t/tidak)?
-  en    qr/\A(y|yes)\z/i      qr/\A(n|no)\z/i          (y/yes/n/no)?
-  fr    qr/\A(o|oui)\z/i      qr/\A(n|non)\z/i         (o/oui/n/non)?
+  lang  yes_words     no_regex
+  ----  ---------     --------
+  en    y, yes        n, no
+  fr    o, oui        n, non
+  id    y, ya         t, tidak
 
-=item * yes_regex => regex (default: qr/\Ay(es)?\z/i)
+=item * yes_words => array
 
-Overrides C<lang>.
+Overrides preset from C<lang>.
 
-=item * no_regex => regex (default: qr/\An(o)?\z/i)
+=item * no_words => array
 
-Overrides C<lang>.
+Overrides preset from C<lang>.
 
 =item * default => bool
 
