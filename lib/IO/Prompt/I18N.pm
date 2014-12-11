@@ -26,7 +26,7 @@ sub prompt {
     while (1) {
         # prompt
         print $text;
-        print " ($default)" if defined($default);
+        print " ($default)" if defined($default) && $opts->{show_default}//1;
         print ":" unless $text =~ /[:?]\s*$/;
         print " ";
 
@@ -58,7 +58,6 @@ sub prompt {
 sub confirm {
     my ($text, $opts) = @_;
 
-    $text //= "Confirm";
     $opts //= {};
 
     state $supported_langs = {
@@ -79,10 +78,11 @@ sub confirm {
         }
     };
 
-    $supported_langs->{$opts->{lang}}
+    my $lang = $supported_langs->{$opts->{lang}}
         or die "Unknown language '$opts->{lang}'";
-    $opts->{yes_words} //= $supported_langs->{$opts->{lang}}{yes_words};
-    $opts->{no_words}  //= $supported_langs->{$opts->{lang}}{no_words};
+    $text //= $lang->{text};
+    $opts->{yes_words} //= $lang->{yes_words};
+    $opts->{no_words}  //= $lang->{no_words};
 
     my $default;
     if (defined $opts->{default}) {
@@ -94,6 +94,7 @@ sub confirm {
     }
 
     my $suffix;
+    my $show_default = 1;
     unless ($text =~ /[()?]/) {
         $text .=
             join("",
@@ -103,6 +104,7 @@ sub confirm {
                      @{ $opts->{yes_words} }, @{ $opts->{no_words} })),
                  ")?",
              );
+        $show_default = 0; # because we already indicate which using uppercase
     }
 
     my $re = join("|", map {quotemeta}
@@ -110,9 +112,10 @@ sub confirm {
     $re = qr/\A($re)\z/i;
 
     my $answer = prompt($text, {
-        required => 1,
-        regex    => $re,
-        default  => $default,
+        required     => 1,
+        regex        => $re,
+        show_default => $show_default,
+        default      => $default,
     });
     use experimental 'smartmatch';
     $answer ~~ @{$opts->{yes_words}} ? 1:0;
@@ -143,7 +146,7 @@ localizable text.
 
 =head1 FUNCTIONS
 
-=head2 prompt($text, \%opts) => val
+=head2 prompt([ $text[, \%opts] ]) => val
 
 Display C<$text> and ask value from STDIN. Will re-ask if value is not valid.
 Return the chomp-ed value.
@@ -162,6 +165,10 @@ If set to true then will require that value is not empty (zero-length).
 
 Set default value.
 
+=item * show_default => bool (default: 1)
+
+Whether to show default value if defined.
+
 =item * regex => REGEX
 
 Validate using regex.
@@ -169,11 +176,10 @@ Validate using regex.
 =back
 
 
-=head2 confirm($text, \%opts) => bool
+=head2 confirm([ $text, [\%opts] ]) => bool
 
-Display C<$text> (defaults to C<Confirm>) and ask for yes or no. Will return
-bool. Basically a convenient wrapper around C<prompt>. Confirmation text is
-localizable by providing
+Display C<$text> (defaults to C<Confirm> in English) and ask for yes or no. Will
+return bool. Basically a convenient wrapper around C<prompt>.
 
 Options:
 
@@ -181,15 +187,16 @@ Options:
 
 =item * lang => str
 
-Support several languages (C<id>, C<en>, C<fr>). Will preset C<yes_words> and
-C<no_words> and adds the choice of words to C<$text>. Will die if language is
-not supported. Here are the supported languages:
+Support several languages (C<id>, C<en>, C<fr>). Default to using LANG/LANGUAGE
+or English. Will preset C<yes_words> and C<no_words> and adds the choice of
+words to C<$text>. Will die if language is not supported. Here are the supported
+languages:
 
-  lang  yes_words     no_regex
-  ----  ---------     --------
-  en    y, yes        n, no
-  fr    o, oui        n, non
-  id    y, ya         t, tidak
+  lang  yes_words     no_regex   default text
+  ----  ---------     --------   ------------
+  en    y, yes        n, no      Confirm
+  fr    o, oui        n, non     Confirmer
+  id    y, ya         t, tidak   Konfirmasi
 
 =item * yes_words => array
 
@@ -207,8 +214,6 @@ Set default value.
 
 
 =head1 TODO
-
-Detect language.
 
 Option to stty off (e.g. when prompting password).
 
