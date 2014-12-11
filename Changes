@@ -1,9 +1,15 @@
-Revision history for SHARYANTO-Text-Prompt
+Revision history for IO-Prompt-I18N
+
+0.77    2014-12-11 (PERLANCAR) (unreleased)
+
+        - Rename module/dist from SHARYANTO-Text-Prompt to IO-Prompt-I18N.
+
+        - confirm(): Add options 'lang', 'yes_regex', 'no_regex'. Support
+          several languages: en, fr, id.
+
 
 0.76    2014-10-11 (PERLANCAR)
 
         - First release, split from SHARYANTO-Utils to reduce dependencies.
 
         - Add function: confirm().
-
-
