@@ -1,5 +1,12 @@
 Revision history for IO-Prompt-I18N
 
+0.78    2014-12-11 (PERLANCAR)
+
+	- [ux] Tweak condition for showing choice of words.
+
+	- [Bugfix] Forgot to add confirm()'s default texts.
+
+
 0.77    2014-12-11 (PERLANCAR)
 
         - Rename module/dist from SHARYANTO-Text-Prompt to IO-Prompt-I18N.
