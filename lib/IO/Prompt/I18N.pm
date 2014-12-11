@@ -61,9 +61,9 @@ sub confirm {
     $opts //= {};
 
     state $supported_langs = {
-        en => {yes_words=>[qw/y yes/], no_words=>[qw/n no/]},
-        fr => {yes_words=>[qw/o oui/], no_words=>[qw/n non/]},
-        id => {yes_words=>[qw/y ya/] , no_words=>[qw/t tidak/]},
+        en => {yes_words=>[qw/y yes/], no_words=>[qw/n no/]   , text=>'Confirm'},
+        fr => {yes_words=>[qw/o oui/], no_words=>[qw/n non/]  , text=>'Confirmer'},
+        id => {yes_words=>[qw/y ya/] , no_words=>[qw/t tidak/], text=>'Konfirmasi'},
     };
 
     $opts->{lang} //= do {
