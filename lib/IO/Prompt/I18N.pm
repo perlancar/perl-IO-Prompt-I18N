@@ -178,6 +178,8 @@ Set default value.
 
 =head1 TODO
 
+Detect language.
+
 Option to stty off (e.g. when prompting password).
 
 Validation using coderef (probably with a C<validation> key which can be regex
