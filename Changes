@@ -1,5 +1,12 @@
 Revision history for IO-Prompt-I18N
 
+0.80    2015-01-03 (PERLANCAR)
+
+	- No functional changes.
+
+	- Rebuild (Generate TODO.md).
+
+
 0.79    2014-12-11 (PERLANCAR)
 
 	- [ux] Uppercase all yes words (or no words).
