@@ -217,16 +217,6 @@ Set default value.
 =back
 
 
-=head1 TODO
-
-Option to stty off (e.g. when prompting password).
-
-Validation using coderef (probably with a C<validation> key which can be regex
-or coderef, and then deprecate C<regex>).
-
-Timeout, like L<Prompt::Timeout>.
-
-
 =head1 SEE ALSO
 
 L<IO::Prompt>, L<IO::Prompt::Tiny>, L<Term::Prompt>, L<Prompt::Timeout>
