@@ -1,23 +1,23 @@
-0.80    2015-01-03 (PERLANCAR)
+0.80    2015-01-03  Released-By: PERLANCAR
 
 	- No functional changes.
 
 	- Rebuild (Generate TODO.md).
 
 
-0.79    2014-12-11 (PERLANCAR)
+0.79    2014-12-11  Released-By: PERLANCAR
 
 	- [ux] Uppercase all yes words (or no words).
 
 
-0.78    2014-12-11 (PERLANCAR)
+0.78    2014-12-11  Released-By: PERLANCAR
 
 	- [ux] Tweak condition for showing choice of words.
 
 	- [Bugfix] Forgot to add confirm()'s default texts.
 
 
-0.77    2014-12-11 (PERLANCAR)
+0.77    2014-12-11  Released-By: PERLANCAR
 
         - Rename module/dist from SHARYANTO-Text-Prompt to IO-Prompt-I18N.
 
@@ -27,7 +27,7 @@
         - prompt(): Add option 'show_default'.
 
 
-0.76    2014-10-11 (PERLANCAR)
+0.76    2014-10-11  Released-By: PERLANCAR
 
         - First release, split from SHARYANTO-Utils to reduce dependencies.
 
